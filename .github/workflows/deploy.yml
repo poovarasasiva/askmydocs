@@ -1,47 +1,49 @@
 name: Deploy Docusaurus to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  push:
+    branches:
+      - main
 
 permissions:
-  contents: write
+  contents: write
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-      - name: Install dependencies
-        working-directory: website
-        run: npm ci
+      - name: Install dependencies
+        working-directory: website
+        run: npm ci
 
-      - name: Build website
-        working-directory: website
-        run: npm run build
+      - name: Build website
+        working-directory: website
+        run: npm run build
 
-      - name: Configure git for GitHub Actions
-        working-directory: website
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+      - name: Configure git for GitHub Actions
+        working-directory: website
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-      - name: Deploy to GitHub Pages
-        working-directory: website
-        env:
-          GIT_USER: github-actions[bot]
-          USE_SSH: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx docusaurus deploy --skip-build
+      - name: Deploy to GitHub Pages
+        working-directory: website
+        env:
+          GIT_USER: github-actions[bot]
+          USE_SSH: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 💡 FIX: Pass the GITHUB_TOKEN as the user/password for the deploy command
+          GIT_DEPLOY_USER: ${{ secrets.GITHUB_TOKEN }}
+        run: npx docusaurus deploy --skip-build
