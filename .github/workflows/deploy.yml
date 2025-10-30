@@ -14,35 +14,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout full history (required for Docusaurus deploy)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # 2️⃣ Setup latest Node.js (>=20)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         working-directory: website
         run: npm ci
 
+      # 4️⃣ Build the static site
       - name: Build website
         working-directory: website
         run: npm run build
 
-      - name: Configure git (like your local env)
-        working-directory: website
-        run: |
-          git config --global user.name "poovarasasiva"
-          git config --global user.email "poovarasasiva@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
+      # 5️⃣ Deploy to GitHub Pages using token authentication
       - name: Deploy to GitHub Pages
         working-directory: website
         env:
-          GIT_USER: poovarasasiva
+          GIT_USER: github-actions[bot]
           USE_SSH: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx docusaurus deploy --skip-build
+        run: |
+          # Configure git identity
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Set remote URL to use the GitHub Actions token
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+
+          # Deploy to gh-pages
+          npx docusaurus deploy --skip-build
