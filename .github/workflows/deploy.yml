@@ -28,6 +28,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://git:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Delete existing gh-pages branch
         run: |
@@ -49,11 +50,10 @@ jobs:
         working-directory: website
         run: npm ci
 
-      - name: Deploy to GitHub Pages
+      - name: Build and Deploy to GitHub Pages
         working-directory: website
         env:
           GIT_USER: git
           USE_SSH: false
-        run: |
-          git remote set-url origin https://git:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          npm run deploy
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run deploy
