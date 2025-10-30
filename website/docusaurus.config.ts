@@ -7,19 +7,16 @@ module.exports = {
   favicon: 'img/favicon.ico',
 
   // --- Site Deployment Config ---
-  url: 'https://poovarasasiva.github.io',       // Your GitHub Pages URL
-  baseUrl: '/askmydocs/',                       // Repo name with trailing slash
-  organizationName: 'poovarasasiva',            // GitHub username or org
-  projectName: 'askmydocs',                     // Repo name
-  deploymentBranch: 'gh-pages',                 // Branch used for deployment
+  url: 'https://poovarasasiva.github.io',     // GitHub Pages URL
+  baseUrl: '/askmydocs/',                     // Repo name with trailing slash
+  organizationName: 'poovarasasiva',          // GitHub username
+  projectName: 'askmydocs',                   // Repo name
+  deploymentBranch: 'gh-pages',               // Deployment branch
+  trailingSlash: false,                       // Avoids SEO/redirect issues
 
   // --- Build Rules ---
   onBrokenLinks: 'throw',
-  markdown: {
-    hooks: {
-      onBrokenMarkdownLinks: 'warn',
-    },
-  },
+  onBrokenMarkdownLinks: 'warn',
 
   // --- Localization ---
   i18n: {
@@ -34,9 +31,10 @@ module.exports = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/poovarasasiva/askmydocs/tree/main/website/',
+          editUrl:
+            'https://github.com/poovarasasiva/askmydocs/tree/main/website/',
         },
-        blog: false, // disable blog
+        blog: false, // Disable blog
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
