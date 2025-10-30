@@ -36,13 +36,12 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Deploy to GitHub Pages
         working-directory: website
         env:
-          GIT_USER: github-actions[bot]
+          GIT_USER: git
           USE_SSH: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_DEPLOY_USER: ${{ secrets.GITHUB_TOKEN }} # The fix for the previous git push error
-        run: npx docusaurus deploy --skip-build
+        run: |
+          git remote set-url origin https://git:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          npm run deploy
