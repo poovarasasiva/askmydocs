@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,42 +13,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout full history (required for Docusaurus deploy)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2️⃣ Setup latest Node.js (>=20)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      # 3️⃣ Install dependencies
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Delete existing gh-pages branch
+        run: |
+          git branch -D gh-pages || true
+          git push origin --delete gh-pages || true
+
+      - name: Initialize new gh-pages branch
+        working-directory: website
+        run: |
+          git checkout --orphan gh-pages
+          git rm -rf .
+          echo "Initializing gh-pages branch" > index.html
+          git add index.html
+          git commit -m "Initialize gh-pages branch"
+          git push origin gh-pages
+          git checkout main
+
       - name: Install dependencies
         working-directory: website
         run: npm ci
 
-      # 4️⃣ Build the static site
-      - name: Build website
-        working-directory: website
-        run: npm run build
-
-      # 5️⃣ Deploy to GitHub Pages using token authentication
       - name: Deploy to GitHub Pages
         working-directory: website
         env:
-          GIT_USER: github-actions[bot]
+          GIT_USER: git
           USE_SSH: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Configure git identity
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Set remote URL to use the GitHub Actions token
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-
-          # Deploy to gh-pages
-          npx docusaurus deploy --skip-build
+          git remote set-url origin https://git:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          npm run deploy
