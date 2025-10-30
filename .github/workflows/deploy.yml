@@ -20,9 +20,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,21 +38,20 @@ jobs:
         env:
           NODE_ENV: production
       
-      - name: Configure Git and Deploy
-        working-directory: ./website
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          GIT_USER=git USE_SSH=false npm run deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website/build
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy website - ${{ github.sha }}'
       
       - name: Deployment successful
         if: success()
         run: |
           echo "✅ Deployment successful!"
-          echo "🌐 Your site will be available at: https://poovarasasiva.github.io/${GITHUB_REPOSITORY#*/}/"
+          echo "🌐 Your site will be available at: https://poovarasasiva.github.io/askmydocs/"
       
       - name: Deployment failed
         if: failure()
