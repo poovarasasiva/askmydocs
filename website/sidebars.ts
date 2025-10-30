@@ -4,8 +4,12 @@ import type { SidebarConfig } from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarConfig = {
   tutorialSidebar: [
     'intro',
+    'getting-started',
     'architecture',
-    'setup',
+    'backend',
+    'ai-engine',
+    'deployment',
+    'troubleshooting',
     'roadmap',
   ],
 };
