@@ -3,7 +3,7 @@ name: Deploy Docusaurus site to GitHub Pages
 on:
   push:
     branches:
-      - main  # or 'master' if you use that
+      - main  # or 'master' if that's your branch
 
 jobs:
   deploy:
@@ -24,6 +24,11 @@ jobs:
       - name: Build Docusaurus site
         working-directory: website
         run: npm run build
+
+      - name: Configure git identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions Bot"
 
       - name: Deploy to GitHub Pages
         working-directory: website
