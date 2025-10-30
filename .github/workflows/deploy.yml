@@ -32,20 +32,17 @@ jobs:
         working-directory: website
         run: npm run build
 
-      - name: Configure git identity
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Configure authentication for push
+      - name: Configure git (like your local env)
         working-directory: website
         run: |
+          git config --global user.name "poovarasasiva"
+          git config --global user.email "poovarasasiva@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Deploy to GitHub Pages
         working-directory: website
         env:
-          GIT_USER: github-actions[bot]
+          GIT_USER: poovarasasiva
           USE_SSH: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx docusaurus deploy --skip-build
