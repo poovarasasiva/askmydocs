@@ -6,7 +6,7 @@ sidebar_label: Architecture
 
 # Architecture Overview
 
-AskMyDocs follows **Clean Architecture** — decoupling domain, application logic, and infrastructure...
+AskMyDocs follows **Clean Architecture** — decoupling domain, application logic, and infrastructure.
 
 ```mermaid
 flowchart LR
