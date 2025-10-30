@@ -3,7 +3,7 @@ name: Deploy Docusaurus site to GitHub Pages
 on:
   push:
     branches:
-      - main  # or 'master' if that's your branch
+      - main
 
 jobs:
   deploy:
@@ -33,6 +33,7 @@ jobs:
       - name: Deploy to GitHub Pages
         working-directory: website
         env:
-          GIT_USER: poovarasasiva
+          GIT_USER: github-actions[bot]
           USE_SSH: false
-        run: npm run deploy
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx docusaurus deploy
